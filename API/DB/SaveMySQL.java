@@ -21,7 +21,7 @@ public class SaveMySQL {
 	//		METODO DI CONNESSIONE AL DATABASE
 	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/api?user=root&useSSL=false";
 	//private static final String DB_USER = "root";
-	//private static final String DB_PASSWORD = "Raviolo.1234";//forse raviolo
+	//private static final String DB_PASSWORD = "PASSWORD";//forse raviolo
 	public static  Connection getDBConnection() throws Exception {
 		System.out.println("     ");
 		System.out.println("-------MySQL JDBC Connection---------");
