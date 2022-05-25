@@ -44,7 +44,7 @@ public class SaveMySQL {
 			System.out.println("CCONNESSIONE SQL AD API  NON  STABILITA!");
 			throw new SQLException(e.getErrorCode()+":"+e.getMessage());
 		}
-		System.out.println("----------------------------");
+		System.out.println("---------------------------------");
 		System.out.println("     ");
 		return dbConnection;
 	}
@@ -435,19 +435,10 @@ public class SaveMySQL {
 			if(stmt != null) stmt.close();
 			if(conn != null)conn.close();
 		}
-
-		for(int i=0; i < 2; i++) //tipA
-			for(int j=0; j< 3; j++) //tip_machA
-				for(int k=0; k<3; k++) //durataA
-				{
-
-				}
-
-
 	}
 
 	public static double getRandomNumberD() {
-		double s = (((Math.random() * (100000 - 1)) + 1));
+		double s = (((Math.random() * (10000 - 1)) + 1));
 		s= Math.round(s*100.0)/100.0;
 		return s;
 	}
