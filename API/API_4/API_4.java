@@ -22,28 +22,43 @@ public class API_4 {
 	public String selezione;
 	public double premio;
 	public int id_polizza;
-	public String durata;
+	public String durata; //FORSE NON MI SERVE
 	public String pag; // come gestire la diversificazione tra annuale e pay to use
 						// verrà gestita nelle successive api
 	
 	
-	public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla api_1 a questa, utilizzando la servlet e non il db
+	public API_3 ogg = new API_3();		//oggetto che serve per fornire i dati dalla api_3 a questa, utilizzando la servlet e non il db
 	
-	public API_1 getOgg() { 
+	// inserire un metodo che data l'id della polizza setta tutto un ogetto con quei dati
+	
+	public void genera(API_3 oggetto, int k) throws SQLException {
+		int idpolizza = getId_Polizza(k, oggetto.getId_macchinario());
+		setData_inizio();
+		this.data_inizio = getData_inizio();
+		this.id_macchinario = oggetto.getId_macchinario();
+		this.selezione = oggetto.getSelezione();
+		this.durata = oggetto.getDurata();
+		setData_fine();
+		this.data_fine = getData_fine();
+		System.out.println("id polizza ->"+idpolizza);
+		this.massimale = getMassimale(idpolizza);
+		this.premio = getPremio(idpolizza);
+	}
+	
+	public API_3 getOgg() { 
 		return ogg;
 	}
 	
-	public void setOgg(API_1 ogg) {		//vengono instanziati i dati riguardanti il macchinario fornito precedentemente
+	public void setOgg(API_3 ogg) {		//vengono instanziati i dati riguardanti il macchinario fornito precedentemente
 	 
 		this.ogg = ogg;
 		setData_inizio();
 		this.data_inizio = getData_inizio();
-		this.id_macchinario = ogg.getIDMacchinario();
-		this.selezione = ogg.getAss_gar();
+		this.id_macchinario = ogg.getId_macchinario();
+		this.selezione = ogg.getSelezione();
 		this.durata = ogg.getDurata();
 		setData_fine();
 		this.data_fine = getData_fine();
-		this.selezione = ogg.getAss_gar();
 		
 	}
 	
@@ -60,7 +75,7 @@ public class API_4 {
 		return id_macchinario;
 	}
 	public void setId_macchinario(int id_macchinario) {
-		this.id_macchinario = ogg.getIDMacchinario();
+		this.id_macchinario = ogg.getId_macchinario();
 	}
 	public void setId_mach(int macchinario) {
 		this.id_macchinario=macchinario;
@@ -134,34 +149,9 @@ public class API_4 {
 	
 	
 	// METODI CON LA CONNESSIONE AL DB
-	
-	// inserimento di una nuova polizza all'interno del DB
-	public void generaPolizza(API_1 api1, String pag, int offerta, API_4 api4, int idU) throws Exception {
-		//SaveMySQL savePolizza = new SaveMySQL();
-		Statement stmt = null;
-		Connection conn = null;
-		System.out.println("INSERIMENTO NUOVA POLIZZA ATTIVA");
-		conn= SaveMySQL.getDBConnection();
-		conn.setAutoCommit(false); // non so cosa sia
-		stmt = conn.createStatement(); //nemmeno
-		String sql = "INSERT INTO api.polizza(inizio, fine, massimale, premio, pagamento, fk_macchinario, fk_user)";   
-		sql += " VALUES('"
-				+ api4.getData_inizio()+ "','"
-				+ api4.getData_fine()+ "',"
-				+ api4.getMassimale(offerta)+ ","
-				+ api4.getPremio(offerta)+ ",'"
-				+ pag+ "','"
-                + api4.getId_macchinario()+ "','"
-				+ idU+ "');";
-		System.out.println("INSERT QUERY: "+sql);
 
-		stmt.execute(sql);
-
-		conn.commit();
-	}
-
-	public double getPremio(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+	public double getPremio(int idpol) throws SQLException {
+		String sql = "SELECT * FROM polizza WHERE idpolizza = '"+idpol+"';";
 		String varRicercata = "premio";
 		double var = -2;
 		try {
@@ -174,8 +164,8 @@ public class API_4 {
 		return var;
 	}
 	
-	public double getMassimale(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+	public double getMassimale(int idpol) throws SQLException {
+		String sql = "SELECT * FROM polizza WHERE idpolizza = '"+idpol+"';";
 		String varRicercata = "massimale";
 		double var = -2;
 		try {
@@ -184,25 +174,80 @@ public class API_4 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.massimale=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
+		//this.massimale=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
 		return var;	
 	}
 	
 	public int getId_Polizza(int user, int macchinario) throws SQLException {
 		System.out.println("RICERCA ID POLIZZA CON fk_macchinario=" + macchinario+" and fk_user "+user);
-		String sql = "SELECT * FROM api.polizza WHERE fk_macchinario = "+macchinario+" and fk_user = "+user+";";
+		String sql = "SELECT * FROM polizza WHERE fk_macchinario = "+macchinario+" and fk_user = "+user+";";
 		String varRicercata = "idpolizza";
-		int var = -1;
+		int var = -2;
 		try {
 			 var = SaveMySQL.getInt(sql, varRicercata);	//metodo all'interno della classe SaveMySQL per non dover riscrivere sempre il codice
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.id_polizza=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
+		//this.id_polizza=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
 		return var;	
 	}
 
+	
+	public void genera(int user, int macchinario) throws SQLException {
+		Statement st;
+		ResultSet rs;
+		Statement stmt = null;
+		Connection conn = null;
+		try {
+			System.out.println("RICERCA POLIZZE");
+			conn = SaveMySQL.getDBConnection();
+			conn.setAutoCommit(false); // non so cosa sia
+			stmt = conn.createStatement(); //nemmeno
+			String sql2 = "SELECT * FROM polizza WHERE fk_user = '"+user+"' and fk_macchinario = '"+macchinario+"';";
+			// ________________________________query
+			try {
+				st = conn.createStatement(); 
+				rs = st.executeQuery(sql2); // faccio la query su uno statement
+				while (rs.next() == true) {
+					System.out.println(rs.getInt("idpolizza"));
+					System.out.println(rs.getDate("inizio"));
+					System.out.println(rs.getDate("fine"));
+					System.out.println(rs.getDouble("massimale"));
+					System.out.println(rs.getDouble("premio"));
+					System.out.println(rs.getString("pagamento"));
+					System.out.println(rs.getInt("fk_macchinario"));
+					System.out.println(rs.getInt("selezione"));
+					
+					setId_polizza(rs.getInt("idpolizza"));
+					setData_inizio(rs.getDate("inizio"));
+				    setData_fine(rs.getDate("fine"));
+				    setMassimale(rs.getDouble("massimale"));
+					setPremio(rs.getDouble("premio"));
+					setPag(rs.getString("pagamento"));
+					setId_mach(rs.getInt("fk_macchinario"));
+					setSelezione(rs.getString("selezione"));
+										
+				}
+			} catch (SQLException e) {
+				System.out.println("errore:" + e.getMessage());
+			}
+			conn.commit();
+		}catch(SQLException sqle) {
+			if(conn!= null) {conn.rollback(); System.out.println("VUOTO");}
+			System.out.println("INSERT ERROR: Transaction is being rolled back   cccc");
+			throw new SQLException(sqle.getErrorCode()+":"+sqle.getMessage());
+		}catch(Exception err) {
+			if(conn != null ) {conn.rollback(); System.out.println("VUOTO");}
+			System.out.println("GENERIC ERROR: Transaction is being rolled back    cccc");
+			throw new SQLException(err.getMessage());
+		}finally {
+			if(stmt != null) stmt.close();
+			if(conn != null)conn.close();
+		}
+	}
+	
+	
 	//metodo utilizzato per fornire tutte le polizze relative ad un user
 	public API_4[] getPolizze(int idUser) throws SQLException{
 			Statement st;
@@ -219,7 +264,7 @@ public class API_4 {
 				stmt = conn.createStatement(); //nemmeno
 
 
-				String sql2 = "SELECT * FROM api.polizza WHERE fk_user = '"+idUser+"';";
+				String sql2 = "SELECT * FROM polizza WHERE fk_user = '"+idUser+"';";
 				// ________________________________query
 				try {
 					st = conn.createStatement(); 
@@ -272,20 +317,18 @@ public class API_4 {
 		Connection conn = null;	
 		int i =0;
 		try {
-			System.out.println("RICERCA pagamenti");
+			System.out.println("RICERCA numero polizze");
 			conn = SaveMySQL.getDBConnection();
 			conn.setAutoCommit(false); // non so cosa sia
 			stmt = conn.createStatement(); //nemmeno
 
 
-			String sql2 = "SELECT * FROM api.polizza WHERE fk_user = '"+id_user+"';";
+			String sql2 = "SELECT * FROM polizza WHERE fk_user = '"+id_user+"';";
 			// ________________________________query
 			try {
 				st = conn.createStatement(); 
 				rs = st.executeQuery(sql2); // faccio la query su uno statement
 				while (rs.next() == true ) {
-					
-					System.out.println(rs);
 					i = rs.getRow();
 					
 				}
@@ -308,6 +351,8 @@ public class API_4 {
 			if(conn != null)conn.close();
 		}
 	}
+	
+	
 	
 	
 	// metodi fittizzi utilizzati per la generazione di offerte finte
