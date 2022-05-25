@@ -20,21 +20,25 @@ public class SaveMySQL {
 
 	//		METODO DI CONNESSIONE AL DATABASE
 	private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/api?user=root&useSSL=false";
+	private static final String DB_CONNECTION2 = "jdbc:postgresql://database-1.cs899svqo5yc.us-east-1.rds.amazonaws.com:5432/api";
 	//private static final String DB_USER = "root";
-	//private static final String DB_PASSWORD = "PASSWORD";//forse raviolo
+	//private static final String DB_PASSWORD = "Raviolo.1234";//forse raviolo
 	public static  Connection getDBConnection() throws Exception {
 		System.out.println("     ");
 		System.out.println("-------MySQL JDBC Connection---------");
 		Connection dbConnection = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			//Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("org.postgresql.Driver");
+			System.out.println("class for name funziona");
+			
 		} catch (ClassNotFoundException e) {
 			System.out.println("ClassNotFoundException: ");
 			System.err.println(e.getMessage());
 			System.out.println("ERRORE class.ForName");
 		} // fine try-catch
 		try {
-			dbConnection = DriverManager.getConnection(DB_CONNECTION);
+			dbConnection = DriverManager.getConnection(DB_CONNECTION2, "root", "raviolo.123");
 			System.out.println("CONNESSIONE SQL AD API STABILITA");
 		}catch(SQLException e) {
 			System.out.println("CCONNESSIONE SQL AD API  NON  STABILITA!");
@@ -401,7 +405,7 @@ public class SaveMySQL {
 				for(int j=0; j< 4; j++) //tip_machA
 					for(int k=0; k<4; k++) //durataA
 					{
-						String insertMacch = "INSERT INTO api.proposte(premio, massimale, valore, tip_mach, durata, tip_polizza)";   
+						String insertMacch = "INSERT INTO proposte(premio, massimale, valore, tip_mach, durata, tip_polizza)";   
 						insertMacch += " VALUES("
 								+ getRandomNumberD()+ ","
 								+ getRandomNumberD()+ ","
