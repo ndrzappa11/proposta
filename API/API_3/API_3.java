@@ -29,8 +29,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		return ogg;
 	}
 	
-	public void setOgg(API_1 ogg) {		//vengono instanziati i dati riguardanti il macchinario fornito precedentemente
-	 
+	public void setOgg(API_1 ogg) {		//vengono instanziati i dati riguardanti il macchinario fornito precedentemente 
 		this.ogg = ogg;
 		setData_inizio();
 		this.data_inizio = getData_inizio();
@@ -67,8 +66,6 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		return data_fine;
 	}
 
-	
-	
 	public void setData_fine() {
 		LocalDate today = LocalDate.now();     //Today
 		LocalDate tomorrow = today.plusMonths(getNum());
@@ -138,7 +135,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 	
 
 	// inserimento di una nuova polizza all'interno del DB
-	public void generaPolizza(API_1 api1, String pag, int offerta, API_3 api4, int idU) throws Exception {
+	public void generaPolizza(API_1 api1, String pag, int offerta, API_3 api3, int idU) throws Exception {
 		//SaveMySQL savePolizza = new SaveMySQL();
 		Statement stmt = null;
 		Connection conn = null;
@@ -146,14 +143,14 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		conn= SaveMySQL.getDBConnection();
 		conn.setAutoCommit(false); // non so cosa sia
 		stmt = conn.createStatement(); //nemmeno
-		String sql = "INSERT INTO api.polizza(inizio, fine, massimale, premio, pagamento, fk_macchinario, fk_user)";   
+		String sql = "INSERT INTO polizza(inizio, fine, massimale, premio, pagamento, fk_macchinario, fk_user)";   
 		sql += " VALUES('"
-				+ api4.getData_inizio()+ "','"
-				+ api4.getData_fine()+ "',"
-				+ api4.getMassimale(offerta)+ ","
-				+ api4.getPremio(offerta)+ ",'"
+				+ api3.getData_inizio()+ "','"
+				+ api3.getData_fine()+ "',"
+				+ api3.getMassimale(offerta)+ ","
+				+ api3.getPremio(offerta)+ ",'"
 				+ pag+ "','"
-                + api4.getId_macchinario()+ "','"
+                + api3.getId_macchinario()+ "','"
 				+ idU+ "');";
 		System.out.println("INSERT QUERY: "+sql);
 
@@ -163,7 +160,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 	}
 	
 	public double getPremio(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
 		String varRicercata = "premio";
 		double var = -2;
 		try {
@@ -177,7 +174,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 	}
 	
 	public double getMassimale(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
 		String varRicercata = "massimale";
 		double var = -2;
 		try {
@@ -193,19 +190,5 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 	
 	
 	/////////////////////////////////////////
-	
-	public int getId_Polizza(int user, int macchinario) throws SQLException {
-		System.out.println("RICERCA ID POLIZZA CON fk_macchinario=" + macchinario+" and fk_user "+user);
-		String sql = "SELECT * FROM api.polizza WHERE fk_macchinario = "+macchinario+" and fk_user = "+user+";";
-		String varRicercata = "idpolizza";
-		int var = -1;
-		try {
-			 var = SaveMySQL.getInt(sql, varRicercata);	//metodo all'interno della classe SaveMySQL per non dover riscrivere sempre il codice
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.id_polizza=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
-		return var;	
-	}
+
 }
