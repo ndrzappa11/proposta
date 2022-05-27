@@ -1,5 +1,7 @@
 # proposta
 tutte le api all'interno del progetto 
 
-non riesco ad esportare il DB, bisognerà rifarlo da zero 
-modifica di tutto il db in postgresql invece che mysql tramite i servizi aws
+database creato su aws RDS, funzionante per un giorno, ma adesso non si riesce piu' a collegarsi
+db all'indirizzo: database-1.cs899svqo5yc.us-east-1.rds.amazonaws.com:5432
+
+bisogna risolvere questo problema gigante
