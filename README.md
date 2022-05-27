@@ -1,5 +1,4 @@
-# proposta
-tutte le api all'interno del progetto 
+# proposta 
 
 database creato su aws RDS, funzionante per un giorno, ma adesso non si riesce piu' a collegarsi
 
