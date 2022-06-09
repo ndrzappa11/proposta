@@ -7,6 +7,7 @@ public class pagamenti {
 	public int id;
 	public Date data;
 	public String esito;
+	public double valore;
 	public int getId() {
 		return id;
 	}
@@ -24,5 +25,11 @@ public class pagamenti {
 	}
 	public void setEsito(String esito) {
 		this.esito = esito;
+	}
+	public double getValore() {
+		return valore;
+	}
+	public void setValore(double valore) {
+		this.valore = valore;
 	}
 }

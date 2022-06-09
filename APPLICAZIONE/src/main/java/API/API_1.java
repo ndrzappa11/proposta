@@ -134,7 +134,7 @@ public class API_1 {
 			stmt = conn.createStatement(); //nemmeno
 
 
-			String insertMacch = "INSERT INTO api.macchinario(matricola,tip,valore,ass_gar,durata)";   
+			String insertMacch = "INSERT INTO macchinario(matricola,tip,valore,ass_gar,durata)";   
 			insertMacch += " VALUES('"
 					+ macchinario.getMatricola()+ "','"
 					+ macchinario.getTip()+ "',"
@@ -267,7 +267,7 @@ public class API_1 {
 			stmt = conn.createStatement(); //nemmeno
 			
 			// bisogna visionare che ricerca devo fare per offrire la polizza migliore all'user, per adesso solo tramite il valore del macchinario
-			sql = "SELECT * FROM api.proposte WHERE valore <= "+getValore()+" and "
+			sql = "SELECT * FROM proposte WHERE valore <= "+getValore()+" and "
 					+ "tip_mach = '"+getTip()+"' and "
 					+ "durata = '" +getDurata()+"' and "
 					+ "tip_polizza = '"+getAss_gar()+ "';";

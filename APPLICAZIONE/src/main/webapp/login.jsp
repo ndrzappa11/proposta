@@ -7,6 +7,8 @@
 <title>login</title>
 </head>
 <body>
+	<a href="ManagementServlet?whatsend=home" target="_center"> <input
+		type="button" value="HOME"></a>&nbsp;
 
 <form name="login" action="ManagementServlet" method="post">
 <table>
@@ -26,10 +28,10 @@
 			type="submit" value="login">
 	</form>
 	<br>
+	NON HAI UN ACCOUNT ?
 	<a href="ManagementServlet?whatsend=regist" target="_center"> <input
 		type="button" value="Registrati"></a>&nbsp;
 	<br><br>
-	<a href="ManagementServlet?whatsend=home" target="_center"> <input
-		type="button" value="HOME"></a>&nbsp;
+
 </body>
 </html>

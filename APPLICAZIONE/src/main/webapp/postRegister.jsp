@@ -9,6 +9,8 @@
 <title>post registrazione</title>
 </head>
 <body>
+	<a href="ManagementServlet?whatsend=home" target="_center"> <input
+		type="button" value="HOME"></a>&nbsp;
 	<h1> CREATO NUOVO USER</h1> <br>
 	<%
 	API_2 prova = (API_2) request.getSession().getAttribute("testLogin");
@@ -63,8 +65,7 @@
 	<br>
 
 	<br><br><br>
-	<a href="ManagementServlet?whatsend=home" target="_center"> <input
-		type="button" value="HOME"></a>&nbsp;
+
 	
 </body>
 </html>

@@ -35,6 +35,7 @@ public class ManagementServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	API_1 test_api_1 = new API_1();
 	API_3 test_api_3 = new API_3();
+	API_4 test_api_4 = new API_4();
 	API_2 testLogin = new API_2();
 
 
@@ -85,7 +86,7 @@ public class ManagementServlet extends HttpServlet {
 		}
 		if(whatsend.equals("form")) {
 			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
-			RequestDispatcher rd = sc.getRequestDispatcher("/prova.jsp"); // passaggio dei parametri gestiti dalla servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/PrimoForm.jsp"); // passaggio dei parametri gestiti dalla servlet
 			rd.forward(request, response); //stampaggio	
 		}
 		else if(whatsend.equals("login")) {
@@ -94,7 +95,7 @@ public class ManagementServlet extends HttpServlet {
 			rd.forward(request, response); //stampaggio	
 		}else if(whatsend.equals("prop")) {
 			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
-			RequestDispatcher rd = sc.getRequestDispatcher("/prova3.jsp"); // passaggio dei parametri gestiti dalla servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/PolizzaAttivata.jsp"); // passaggio dei parametri gestiti dalla servlet
 			rd.forward(request, response); //stampaggio	
 		}else if(whatsend.equals("regist")) {
 			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
@@ -107,14 +108,24 @@ public class ManagementServlet extends HttpServlet {
 			RequestDispatcher rd = sc.getRequestDispatcher("/home.jsp"); // passaggio dei parametri gestiti dalla servlet
 			rd.forward(request, response); //stampaggio	
 		}
-		if(whatsend.equals("api5")) {
+		if(whatsend.equals("pagamenti")) {
 			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
-			RequestDispatcher rd = sc.getRequestDispatcher("/prova4.jsp"); // passaggio dei parametri gestiti dalla servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/ListaPagamenti.jsp"); // passaggio dei parametri gestiti dalla servlet
 			rd.forward(request, response); //stampaggio		
 		}
-		if(whatsend.equals("macchinari")) {
+		if(whatsend.equals("LsitaPolizze")) {
 			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
-			RequestDispatcher rd = sc.getRequestDispatcher("/macchinari.jsp"); // passaggio dei parametri gestiti dalla servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/ListaPolizze.jsp"); // passaggio dei parametri gestiti dalla servlet
+			rd.forward(request, response); //stampaggio		
+		}
+		if(whatsend.equals("sinistro")) {
+			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/newSinistro.jsp"); // passaggio dei parametri gestiti dalla servlet
+			rd.forward(request, response); //stampaggio		
+		}
+		if(whatsend.equals("listasinistri")) {
+			ServletContext sc = request.getSession().getServletContext(); // richiamo della servlet
+			RequestDispatcher rd = sc.getRequestDispatcher("/ListaSinistri.jsp"); // passaggio dei parametri gestiti dalla servlet
 			rd.forward(request, response); //stampaggio		
 		}
 	}
@@ -184,12 +195,16 @@ public class ManagementServlet extends HttpServlet {
 			test_api_3.setOgg(test_api_1); 			
 			request.getSession().removeAttribute("test2");
 			request.getSession().setAttribute("test2", test_api_3);
+			
+			test_api_4.setOgg(test_api_3); 			
+			request.getSession().removeAttribute("test4");
+			request.getSession().setAttribute("test4", test_api_4);
 
 			// creare la connessione al db sulla servlet
 			// non può essere gestito nelle classi / api
 
 			ServletContext sc = request.getSession().getServletContext();
-			RequestDispatcher rd = sc.getRequestDispatcher("/prova2.jsp");
+			RequestDispatcher rd = sc.getRequestDispatcher("/SecondoForm.jsp");
 			rd.forward(request, response);
 		}
 
@@ -198,6 +213,7 @@ public class ManagementServlet extends HttpServlet {
 			String pag = request.getParameter("pag");
 			System.out.println("pagamento: "+pag);
 			test_api_3.setPag(pag);
+			test_api_4.setPag(pag);
 			int offerta = Integer.parseInt(request.getParameter("offerta"));
 			System.out.println("offerta	: "+offerta);
 			API_2 test = (API_2) request.getSession().getAttribute("testLogin");
@@ -207,12 +223,21 @@ public class ManagementServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			try {
+				test_api_4.genera(test_api_3, test.getIdU(test));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ServletContext sc = request.getSession().getServletContext();
-			RequestDispatcher rd = sc.getRequestDispatcher("/prova3.jsp");
+			RequestDispatcher rd = sc.getRequestDispatcher("/PolizzaAttivata.jsp");
 			rd.forward(request, response);
 		}
 		if(whatsend.equals("login")) {
-
+			
 			String email = request.getParameter("email");
 			System.out.println("email: "+email);
 			String pass = request.getParameter("pass");
@@ -261,6 +286,7 @@ public class ManagementServlet extends HttpServlet {
 			testLogin.setInserimento();
 			//SaveMySQL saveUser = new SaveMySQL();
 			try {
+				//testLogin.setUser("cacca", "cacca");
 				testLogin.setUser(testLogin);
 				testLogin.setId(testLogin.getIdU(testLogin));
 				System.out.println(testLogin.getId());
@@ -279,18 +305,31 @@ public class ManagementServlet extends HttpServlet {
 			rd.forward(request, response);
 			//test1.setIduser();
 		}
-		if(whatsend.equals("assistenza")) {
-			String api = request.getParameter("api");
-			System.out.println("api: "+api);
+		if(whatsend.equals("sinistro")) {
+			int idPolizza = Integer.parseInt(request.getParameter("idPolizza"));
+			System.out.println("idPolizza"+idPolizza);
+			API_7 sinistro = new API_7();
+			try {
+				int i = testLogin.getIdU(testLogin);
+				System.out.println("CONTROLLO ESISTENZA POLIZZA CON USER "+i);
+				sinistro.generaSinistro(idPolizza, i);
+				sinistro.setId(sinistro.getId(idPolizza));
+				sinistro.setData(sinistro.getdata(sinistro.getId()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			request.getSession().removeAttribute("sinistro");
+			request.getSession().setAttribute("sinistro", sinistro);
 			ServletContext sc = request.getSession().getServletContext();
-			RequestDispatcher rd = sc.getRequestDispatcher("/assistenza.jsp");
+			RequestDispatcher rd = sc.getRequestDispatcher("/sinistro.jsp");
 			rd.forward(request, response);
 		}
 		if(whatsend.equals("pagamenti")) {
 			String api = request.getParameter("api");
 			System.out.println("api: "+api);
 			ServletContext sc = request.getSession().getServletContext();
-			RequestDispatcher rd = sc.getRequestDispatcher("/pagamenti.jsp");
+			RequestDispatcher rd = sc.getRequestDispatcher("/ListaPagamenti.jsp");
 			rd.forward(request, response);
 		}
 	}

@@ -12,6 +12,8 @@ import db.SaveMySQL;
 
 public class API_3 {
 
+	// api di inserimento polizza all'interno del DB
+	
 	public int id_macchinario;
 	public Date data_inizio;
 	public Date data_fine;
@@ -21,14 +23,14 @@ public class API_3 {
 	public int id_polizza;
 	public String durata;
 	public String pag; 
-	
-	
-public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla api_1 a questa, utilizzando la servlet e non il db
-	
+
+
+	public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla api_1 a questa, utilizzando la servlet e non il db
+
 	public API_1 getOgg() { 
 		return ogg;
 	}
-	
+
 	public void setOgg(API_1 ogg) {		//vengono instanziati i dati riguardanti il macchinario fornito precedentemente 
 		this.ogg = ogg;
 		setData_inizio();
@@ -39,7 +41,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		setData_fine();
 		this.data_fine = getData_fine();
 		this.selezione = ogg.getAss_gar();
-		
+
 	}
 
 	public int getId_macchinario() {
@@ -72,15 +74,15 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		Date date = Date.valueOf(tomorrow);
 		this.data_fine = date;
 	}
-	
+
 	private int getNum() { 		//modifica dalla stringa dei mesi a un intero adeguato
-		 if(durata.equals("tre_mesi")) return 3;
+		if(durata.equals("tre_mesi")) return 3;
 		if(durata.equals("sei_mesi")) return 6;
 		if(durata.equals("dodici_mesi")) return 12;
 		if(durata.equals("ventiquattro_mesi")) return 24;
 		return 0;
 	}
-	
+
 	public void setData_fine(Date data_fine) {
 		this.data_fine = data_fine;
 	}
@@ -132,7 +134,7 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 	public void setPag(String pag) {
 		this.pag = pag;
 	}
-	
+
 
 	// inserimento di una nuova polizza all'interno del DB
 	public void generaPolizza(API_1 api1, String pag, int offerta, API_3 api3, int idU) throws Exception {
@@ -143,28 +145,29 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		conn= SaveMySQL.getDBConnection();
 		conn.setAutoCommit(false); // non so cosa sia
 		stmt = conn.createStatement(); //nemmeno
-		String sql = "INSERT INTO api.polizza(inizio, fine, massimale, premio, pagamento, fk_macchinario, fk_user)";   
+		String sql = "INSERT INTO polizza(inizio, fine, massimale, premio, pagamento, fk_macchinario, fk_user, selezione)";   
 		sql += " VALUES('"
 				+ api3.getData_inizio()+ "','"
 				+ api3.getData_fine()+ "',"
-				+ api3.getMassimale(offerta)+ ","
-				+ api3.getPremio(offerta)+ ",'"
+				+ api3.getMassimale(offerta, conn)+ ","
+				+ api3.getPremio(offerta, conn)+ ",'"
 				+ pag+ "','"
-                + api3.getId_macchinario()+ "','"
-				+ idU+ "');";
+				+ api3.getId_macchinario()+ "','"
+				+ idU+ "', '"
+				+ api3.getSelezione()+"' );";
 		System.out.println("INSERT QUERY: "+sql);
 
 		stmt.execute(sql);
 
 		conn.commit();
 	}
-	
+
 	public double getPremio(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
 		String varRicercata = "premio";
 		double var = -2;
 		try {
-			 var = SaveMySQL.getDouble(sql, varRicercata);
+			var = SaveMySQL.getDouble(sql, varRicercata);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -172,13 +175,13 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		this.premio=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
 		return var;
 	}
-	
+
 	public double getMassimale(int offerta) throws SQLException {
-		String sql = "SELECT * FROM api.proposte WHERE idproposta = '"+offerta+"';";
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
 		String varRicercata = "massimale";
 		double var = -2;
 		try {
-			 var = SaveMySQL.getDouble(sql, varRicercata);
+			var = SaveMySQL.getDouble(sql, varRicercata);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -186,9 +189,37 @@ public API_1 ogg = new API_1();		//oggetto che serve per fornire i dati dalla ap
 		this.massimale=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
 		return var;	
 	}
+
 	
-	
-	
+	public double getPremio(int offerta, Connection con) throws SQLException {
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
+		String varRicercata = "premio";
+		double var = -2;
+		try {
+			var = SaveMySQL.getDouble(sql, varRicercata, con);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.premio=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
+		return var;
+	}
+
+	public double getMassimale(int offerta, Connection conn) throws SQLException {
+		String sql = "SELECT * FROM proposte WHERE idproposta = '"+offerta+"';";
+		String varRicercata = "massimale";
+		double var = -2;
+		try {
+			var = SaveMySQL.getDouble(sql, varRicercata, conn);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.massimale=var;		//MODIFICARE IL SETTAGGIO DELLA VARIABILE
+		return var;	
+	}
+
+
 	/////////////////////////////////////////
 
 }

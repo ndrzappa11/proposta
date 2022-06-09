@@ -7,6 +7,8 @@
 <title>ASSISTENZA</title>
 </head>
 <body>
+	<a href="ManagementServlet?whatsend=home" target="_center"> <input
+		type="button" value="HOME"></a>&nbsp;
 
 	<h1>ASSISTENZA</h1>
 </body>

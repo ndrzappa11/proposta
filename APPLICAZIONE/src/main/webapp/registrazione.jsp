@@ -7,6 +7,8 @@
 <title>registrazione</title>
 </head>
 <body>
+	<a href="ManagementServlet?whatsend=home" target="_center"> <input
+		type="button" value="HOME"></a>&nbsp;
 
 
 	<form name="regist" action="ManagementServlet" method="post">
@@ -44,8 +46,6 @@
 
 	<br>
 	<br>
-	<a href="ManagementServlet?whatsend=home" target="_center"> <input
-		type="button" value="HOME"></a>&nbsp;
 
 </body>
 </html>

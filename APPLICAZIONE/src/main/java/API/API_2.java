@@ -108,14 +108,14 @@ public class API_2 {
 			conn.setAutoCommit(false); // non so cosa sia
 			stmt = conn.createStatement(); //nemmeno
 
-			sql = "SELECT * FROM api.user WHERE email = '"+email+"' and password = '"+password+"';";
+			sql = "SELECT * FROM public.user WHERE email = '"+email+"' and password = '"+password+"';";
 
 			try {
 				st = conn.createStatement(); 
 				rs = st.executeQuery(sql); // faccio la query su uno statement
 				//System.out.println(rs.getString("nome") + "\t" + rs.getString("cognome") );
 				while(rs.next()) {
-					System.out.println(rs.getString("nome") + "\t" + rs.getString("cognome") +"\t"+ rs.getString("password")+"\t"+ rs.getString("email") );
+					System.out.println(" nome : "+rs.getString("nome") + "\n cognome : " + rs.getString("cognome") +"\n password : "+ rs.getString("password")+"\n email: "+ rs.getString("email") );
 					nome = rs.getString("nome");
 					User.setNome(rs.getString("nome"));
 					User.setCognome(rs.getString("cognome"));
@@ -127,6 +127,7 @@ public class API_2 {
 					//testLogin.setId(rs.getInt("iduser"));
 				}
 			} catch (SQLException e) {
+				System.out.println("questo?");
 				System.out.println("errore:" + e.getMessage());
 			}
 			conn.commit();
@@ -161,7 +162,7 @@ public class API_2 {
 			stmt = conn.createStatement(); //nemmeno
 
 
-			String sql2 = "SELECT * FROM user WHERE nome = '"+user.getNome()+"' and cognome = '"+user.getCognome()+"'"
+			String sql2 = "SELECT * FROM public.user WHERE nome = '"+user.getNome()+"' and cognome = '"+user.getCognome()+"'"
 					+ "and email = '"+user.getEmail()+"';";
 			// ________________________________query
 			try {
@@ -204,7 +205,7 @@ public class API_2 {
 			stmt = conn.createStatement(); //nemmeno
 
 
-			String sql = "INSERT INTO api.user(nome, cognome, email, password, nascita, telefono, inserimento)";   
+			String sql = "INSERT INTO public.user(nome, cognome, email, password, nascita, telefono, inserimento)";   
 			sql += " VALUES('"
 					+ user.getNome()+ "','"
 					+ user.getCognome()+ "','"
@@ -245,7 +246,7 @@ public class API_2 {
 			stmt = conn.createStatement(); //nemmeno
 
 
-			String sql = "INSERT INTO api.user(nome, cognome, email, password, nascita, telefono, inserimento)";   
+			String sql = "INSERT INTO public.user(nome, cognome, email, password, nascita, telefono, inserimento)";   
 			sql += " VALUES('"
 					+ nome + "','"
 					+ cognome + "','"
@@ -272,5 +273,10 @@ public class API_2 {
 			if(conn != null)conn.close();
 		}
 	}
+
+		// se si usa POSTGRESS bisogna mettere davanti alla tabella public."nome tabella"
+	
+	
+
 
 }

@@ -11,6 +11,8 @@ import API.pagamenti;
 
 public class API_5 {
 
+		// api di pagamento del contratto
+	
 	public double valore;
 	public String per;	//periodo ammortamento
 	public int num_fraz;
